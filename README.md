@@ -1,4 +1,4 @@
-# Fairness-Aware Machine Learning Pipeline
+# Fairness-Awareness Machine Learning Pipeline
 
 _A unified framework for synthetic data generation, counterfactual testing, and automated fairness evaluation across multiple high-stakes domains._  
 **Authors:** Your Name et al.  
