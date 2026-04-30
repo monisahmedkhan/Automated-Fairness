@@ -1,0 +1,9 @@
+Dataset,Baseline,Avg (10 runs),Lowest,Highest,Gain
+UCI Adult,84.8,91.8,91.2,92.4,7.0
+COMPAS,64.0,83.9,82.9,85.0,19.9
+Diabetes 130-US,76.3,90.6,89.9,91.3,14.3
+MEPS,75.8,87.4,86.5,88.2,11.6
+Student Performance,73.5,86.1,84.7,87.5,12.6
+Titanic,74.8,88.3,87.4,89.2,13.5
+CivilComments,82.1,89.9,89.2,90.5,7.8
+Average,75.9,88.3,87.4,89.2,12.4

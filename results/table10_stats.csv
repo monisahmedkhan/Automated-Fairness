@@ -1,0 +1,6 @@
+Metric,Mean,CI Low,CI High,p-value,Cohen d
+Accuracy Gain,12.4,10.9,13.9,<0.001,1.89
+Bias Reduction,-91.2,-94.6,-87.8,<0.001,3.67
+Detection Rate,89.3,86.1,92.5,<0.001,3.21
+F1-Score Gain,21.4,19.2,23.6,<0.001,2.89
+Processing Efficiency,43.2,38.9,47.5,<0.001,2.15

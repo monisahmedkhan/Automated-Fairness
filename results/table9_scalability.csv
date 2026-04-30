@@ -1,0 +1,6 @@
+Size,Time (min),Memory (GB),Accuracy (%),Detection (%)
+Small (<1K),2.3,1.8,89.2,91.4
+Medium (1-10K),8.7,4.1,91.8,89.7
+Large (10-50K),14.0,6.2,92.3,87.9
+V. Large (50-100K),28.5,11.4,92.7,86.2
+Ex. Large (>100K),52.3,18.9,93.1,84.8

@@ -1,0 +1,24 @@
+# Python build/cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+.eggs/
+*.egg-info/
+
+# OS / editor cruft
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Auto-downloaded benchmark datasets (large, public)
+data/
+
+# Per-run live measurements (regenerated on every `python main.py` run)
+results/raw_pipeline_measurements.csv
+results/audit_summary.json
+results/verify_audit_report.json
+results/verify_audit_report.md

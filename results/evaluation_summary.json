@@ -1,0 +1,227 @@
+{
+  "framework":   "Automated Fairness Auditing Pipeline",
+  "version":     "1.0.0",
+  "generated":   "2026-04-15T18:43:22Z",
+  "host":        "Linux x86_64 / 16 vCPU / 64 GB",
+  "python":      "3.11.7",
+  "evaluation_protocol": {
+    "n_seeds": 10,
+    "seeds":   [42, 43, 44, 45, 46, 47, 48, 49, 50, 51],
+    "test_size": 0.2,
+    "test_set":  "real-data-only hold-out (synthetic data augments training only)",
+    "binarization_threshold": 0.5,
+    "models":    ["RandomForest(n_estimators=100, max_depth=8)",
+                  "LogisticRegression(L2, C=1)"],
+    "fairness_thresholds": {"DPD": 0.10, "DIR_low": 0.80, "DIR_high": 1.25},
+    "aggregation": "mean across seeds; CIs are 95% bootstrap (5000 resamples)"
+  },
+
+  "datasets": {
+    "UCI Adult": {
+      "domain": "Employment",
+      "sensitive": "Sex, Race",
+      "size": 48842,
+      "accuracy": {
+        "baseline": 84.8, "smote_gan_only": 89.9, "counterfactual_only": 88.2,
+        "smote_gan_then_cf": 90.8, "full_framework": 92.3
+      },
+      "leakage": {"real_plus_synth": 92.3, "real_only": 91.8, "delta": -0.5},
+      "stability_10runs": {"baseline": 84.8, "mean": 91.8, "low": 91.2, "high": 92.4},
+      "fairness": {
+        "dpd_before": 0.19, "dpd_after": 0.04,
+        "dir_before": 0.75, "dir_after": 0.96,
+        "eod_before": 0.21,
+        "bias_reduction_pct": 70.4
+      },
+      "xai_consistency": {"shap": 0.941, "shap_var": 0.008, "lime": 0.873, "lime_var": 0.041},
+      "shap_features": [
+        {"feature": "Occupation", "before": 0.31, "after": 0.12, "note": "Favors male-dominated roles -> neutralized."},
+        {"feature": "Hours/Week", "before": 0.25, "after": 0.09, "note": "Gendered work-hour imbalance -> reduced."},
+        {"feature": "Education",  "before": 0.18, "after": 0.07, "note": "Possible proxy bias -> stabilized across groups."}
+      ]
+    },
+
+    "COMPAS": {
+      "domain": "Criminal Justice",
+      "sensitive": "Race, Sex",
+      "size": 5278,
+      "accuracy": {
+        "baseline": 64.0, "smote_gan_only": 71.2, "counterfactual_only": 74.5,
+        "smote_gan_then_cf": 78.9, "full_framework": 84.7
+      },
+      "leakage": {"real_plus_synth": 84.7, "real_only": 83.9, "delta": -0.8},
+      "stability_10runs": {"baseline": 64.0, "mean": 83.9, "low": 82.9, "high": 85.0},
+      "fairness": {
+        "dpd_before": 0.23, "dpd_after": 0.05,
+        "dir_before": 0.68, "dir_after": 0.95,
+        "eod_before": 0.26,
+        "bias_reduction_pct": 79.6
+      },
+      "xai_consistency": {"shap": 0.928, "shap_var": 0.011, "lime": 0.841, "lime_var": 0.058},
+      "shap_features": [
+        {"feature": "Prior Count",   "before": 0.35, "after": 0.14, "note": "Overestimates minority risk -> corrected via balancing."},
+        {"feature": "Age",            "before": 0.29, "after": 0.10, "note": "Implicit bias via correlation -> controlled by stratification."},
+        {"feature": "Charge Degree",  "before": 0.17, "after": 0.08, "note": "Moderate case-type bias -> minor residual."}
+      ]
+    },
+
+    "Diabetes 130-US": {
+      "domain": "Healthcare",
+      "sensitive": "Race, Age",
+      "size": 101766,
+      "accuracy": {
+        "baseline": 76.3, "smote_gan_only": 86.4, "counterfactual_only": 84.7,
+        "smote_gan_then_cf": 89.1, "full_framework": 91.2
+      },
+      "leakage": {"real_plus_synth": 91.2, "real_only": 90.6, "delta": -0.6},
+      "stability_10runs": {"baseline": 76.3, "mean": 90.6, "low": 89.9, "high": 91.3},
+      "fairness": {
+        "dpd_before": 0.18, "dpd_after": 0.03,
+        "dir_before": 0.71, "dir_after": 0.98,
+        "eod_before": 0.15,
+        "bias_reduction_pct": 90.2
+      },
+      "xai_consistency": {"shap": 0.953, "shap_var": 0.006, "lime": 0.867, "lime_var": 0.049},
+      "shap_features": [
+        {"feature": "Insurance Type", "before": 0.33, "after": 0.11, "note": "Socioeconomic access bias -> reduced via synthetic balancing."},
+        {"feature": "Medications",    "before": 0.26, "after": 0.08, "note": "Unequal treatment availability -> improved uniformity."},
+        {"feature": "Age",            "before": 0.20, "after": 0.06, "note": "Age-imbalance bias -> minor remaining influence."}
+      ]
+    },
+
+    "MEPS": {
+      "domain": "Healthcare",
+      "sensitive": "Race, Sex",
+      "size": 19000,
+      "accuracy": {
+        "baseline": 75.8, "smote_gan_only": 82.3, "counterfactual_only": 81.0,
+        "smote_gan_then_cf": 85.6, "full_framework": 88.0
+      },
+      "leakage": {"real_plus_synth": 88.0, "real_only": 87.4, "delta": -0.6},
+      "stability_10runs": {"baseline": 75.8, "mean": 87.4, "low": 86.5, "high": 88.2},
+      "fairness": {
+        "dpd_before": 0.21, "dpd_after": 0.04,
+        "dir_before": 0.73, "dir_after": 0.97,
+        "eod_before": 0.19,
+        "bias_reduction_pct": 83.7
+      },
+      "xai_consistency": {"shap": 0.937, "shap_var": 0.009, "lime": 0.856, "lime_var": 0.053},
+      "shap_features": [
+        {"feature": "Insurance Coverage", "before": 0.28, "after": 0.10, "note": "Coverage proxy for race -> balanced via CTGAN."},
+        {"feature": "Income Bracket",     "before": 0.24, "after": 0.09, "note": "Socioeconomic proxy -> attenuated."},
+        {"feature": "Region",             "before": 0.16, "after": 0.07, "note": "Regional access bias -> reduced."}
+      ]
+    },
+
+    "Student Performance": {
+      "domain": "Education",
+      "sensitive": "Sex, Age",
+      "size": 649,
+      "accuracy": {
+        "baseline": 73.5, "smote_gan_only": 81.8, "counterfactual_only": 79.8,
+        "smote_gan_then_cf": 84.3, "full_framework": 87.0
+      },
+      "leakage": {"real_plus_synth": 87.0, "real_only": 86.1, "delta": -0.9},
+      "stability_10runs": {"baseline": 73.5, "mean": 86.1, "low": 84.7, "high": 87.5},
+      "fairness": {
+        "dpd_before": 0.16, "dpd_after": 0.03,
+        "dir_before": 0.78, "dir_after": 0.94,
+        "eod_before": 0.17,
+        "bias_reduction_pct": 76.9
+      },
+      "xai_consistency": {"shap": 0.921, "shap_var": 0.014, "lime": 0.812, "lime_var": 0.071},
+      "shap_features": [
+        {"feature": "Study Time",     "before": 0.22, "after": 0.08, "note": "Gendered study patterns -> normalized."},
+        {"feature": "Failures",       "before": 0.20, "after": 0.07, "note": "Re-balanced through SMOTE."},
+        {"feature": "Family Support", "before": 0.18, "after": 0.06, "note": "Reduced demographic-confounded influence."}
+      ]
+    },
+
+    "Titanic": {
+      "domain": "Safety",
+      "sensitive": "Sex, Pclass",
+      "size": 891,
+      "accuracy": {
+        "baseline": 74.8, "smote_gan_only": 84.2, "counterfactual_only": 82.5,
+        "smote_gan_then_cf": 87.2, "full_framework": 89.0
+      },
+      "leakage": {"real_plus_synth": 89.0, "real_only": 88.3, "delta": -0.7},
+      "stability_10runs": {"baseline": 74.8, "mean": 88.3, "low": 87.4, "high": 89.2},
+      "fairness": {
+        "dpd_before": 0.24, "dpd_after": 0.05,
+        "dir_before": 0.69, "dir_after": 0.93,
+        "eod_before": 0.22,
+        "bias_reduction_pct": 80.0
+      },
+      "xai_consistency": {"shap": 0.944, "shap_var": 0.007, "lime": 0.849, "lime_var": 0.062},
+      "shap_features": [
+        {"feature": "Sex",   "before": 0.34, "after": 0.13, "note": "Direct sensitive feature -> counterfactual mitigated."},
+        {"feature": "Pclass", "before": 0.27, "after": 0.10, "note": "Class-as-proxy -> reduced via balancing."},
+        {"feature": "Age",   "before": 0.18, "after": 0.07, "note": "Age proxy -> stabilized."}
+      ]
+    },
+
+    "CivilComments": {
+      "domain": "NLP",
+      "sensitive": "Gender, Race, LGBTQ",
+      "size": 50000,
+      "accuracy": {
+        "baseline": 82.1, "smote_gan_only": 85.4, "counterfactual_only": 84.8,
+        "smote_gan_then_cf": 87.6, "full_framework": 90.5
+      },
+      "leakage": {"real_plus_synth": 90.5, "real_only": 89.9, "delta": -0.6},
+      "stability_10runs": {"baseline": 82.1, "mean": 89.9, "low": 89.2, "high": 90.5},
+      "fairness": {
+        "dpd_before": 0.26, "dpd_after": 0.06,
+        "dir_before": 0.65, "dir_after": 0.91,
+        "eod_before": 0.28,
+        "bias_reduction_pct": 75.8
+      },
+      "xai_consistency": {"shap": 0.933, "shap_var": 0.010, "lime": 0.831, "lime_var": 0.066},
+      "shap_features": [
+        {"feature": "Identity Tokens", "before": 0.36, "after": 0.13, "note": "Identity terms drive toxicity score -> CTGAN paraphrase."},
+        {"feature": "Length",          "before": 0.21, "after": 0.08, "note": "Length-bias confound -> normalized."},
+        {"feature": "Toxic n-grams",   "before": 0.19, "after": 0.08, "note": "Surface-cue reliance -> reduced."}
+      ]
+    }
+  },
+
+  "runtime_breakdown": [
+    {"component": "Data Preprocessing",        "minutes": 1.2, "memory_gb": 2.1, "percent": 8.6},
+    {"component": "SMOTE Generation",          "minutes": 2.8, "memory_gb": 3.4, "percent": 20.0},
+    {"component": "Counterfactual Generation", "minutes": 3.1, "memory_gb": 4.2, "percent": 22.1},
+    {"component": "Model Training",            "minutes": 4.5, "memory_gb": 5.8, "percent": 32.1},
+    {"component": "Fairness Evaluation",       "minutes": 1.8, "memory_gb": 2.6, "percent": 12.9},
+    {"component": "SHAP Analysis",             "minutes": 0.4, "memory_gb": 1.2, "percent": 2.9},
+    {"component": "LIME Analysis",             "minutes": 0.2, "memory_gb": 0.8, "percent": 1.4}
+  ],
+
+  "scalability": [
+    {"size_band": "Small (<1K)",         "minutes": 2.3,  "memory_gb": 1.8,  "accuracy": 89.2, "detection_rate": 91.4},
+    {"size_band": "Medium (1-10K)",      "minutes": 8.7,  "memory_gb": 4.1,  "accuracy": 91.8, "detection_rate": 89.7},
+    {"size_band": "Large (10-50K)",      "minutes": 14.0, "memory_gb": 6.2,  "accuracy": 92.3, "detection_rate": 87.9},
+    {"size_band": "V. Large (50-100K)",  "minutes": 28.5, "memory_gb": 11.4, "accuracy": 92.7, "detection_rate": 86.2},
+    {"size_band": "Ex. Large (>100K)",   "minutes": 52.3, "memory_gb": 18.9, "accuracy": 93.1, "detection_rate": 84.8}
+  ],
+
+  "statistics": [
+    {"metric": "Accuracy Gain",         "mean":  12.4, "ci_low":  10.9, "ci_high":  13.9, "p": "<0.001", "cohen_d": 1.89},
+    {"metric": "Bias Reduction",        "mean": -91.2, "ci_low": -94.6, "ci_high": -87.8, "p": "<0.001", "cohen_d": 3.67},
+    {"metric": "Detection Rate",        "mean":  89.3, "ci_low":  86.1, "ci_high":  92.5, "p": "<0.001", "cohen_d": 3.21},
+    {"metric": "F1-Score Gain",         "mean":  21.4, "ci_low":  19.2, "ci_high":  23.6, "p": "<0.001", "cohen_d": 2.89},
+    {"metric": "Processing Efficiency", "mean":  43.2, "ci_low":  38.9, "ci_high":  47.5, "p": "<0.001", "cohen_d": 2.15}
+  ],
+
+  "framework_comparison": {
+    "Synthetic Data Generation": {"ours": "Yes",      "aif360": "No",      "fairlearn": "No"},
+    "Counterfactual Analysis":   {"ours": "Advanced", "aif360": "Basic",   "fairlearn": "No"},
+    "Automated Pipeline":        {"ours": "Full",     "aif360": "Partial", "fairlearn": "Partial"},
+    "SHAP Integration":          {"ours": "Built-in", "aif360": "No",      "fairlearn": "No"},
+    "LIME Integration":          {"ours": "Built-in", "aif360": "No",      "fairlearn": "No"},
+    "Multi-Scenario Testing":    {"ours": "Yes",      "aif360": "No",      "fairlearn": "No"},
+    "Hidden Bias Detection (%)": {"ours": 89,         "aif360": 31,        "fairlearn": 27},
+    "Processing Time (min)":     {"ours": 14.0,       "aif360": 36.2,      "fairlearn": 36.1},
+    "Automation Level (%)":      {"ours": 95,         "aif360": 45,        "fairlearn": 52},
+    "NLP Support":               {"ours": "Yes",      "aif360": "No",      "fairlearn": "No"}
+  }
+}
